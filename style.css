@@ -53,7 +53,7 @@ h1 {
 }
 
 .curso.completado {
-  background-color: #90ee90;
+  background-color: #0c6e0c;
   text-decoration: line-through;
   color: black;
 }
