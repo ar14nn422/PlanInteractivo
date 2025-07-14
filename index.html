@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plan Interactivo-Ingeniería en Sistemas</title>
+  <title>Plan Interactivo - Ingeniería en Sistemas</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Plan Interactivo-Ingeniería en Sistemas</h1>
+  <h1>Plan Interactivo - Ingeniería en Sistemas</h1>
   <div id="malla-container"></div>
 
   <script src="malla.js"></script>
@@ -31,75 +31,87 @@
       });
     }
 
-    malla.forEach((semestre, index) => {
-      const col = document.createElement('div');
-      col.className = 'semestre';
+    for (let i = 0; i < malla.length; i += 2) {
+      const nivelNum = Math.floor(i / 2) + 1;
+      const nivelDiv = document.createElement('div');
+      nivelDiv.className = 'nivel';
 
-      const title = document.createElement('h2');
-      title.textContent = `Semestre ${index + 1}`;
-      title.style.cursor = 'pointer';
+      const nivelTitulo = document.createElement('h2');
+      nivelTitulo.textContent = `Nivel ${nivelNum}`;
+      nivelDiv.appendChild(nivelTitulo);
 
-      title.addEventListener('click', () => {
-        const botones = col.querySelectorAll('.curso');
-        const algunoSinMarcar = Array.from(botones).some(btn => !btn.classList.contains('completado'));
+      for (let j = i; j < i + 2 && j < malla.length; j++) {
+        const semestre = malla[j];
+        const col = document.createElement('div');
+        col.className = 'semestre';
 
-        botones.forEach(btn => {
-          const requisitos = JSON.parse(btn.dataset.requisitos || '[]');
-          const habilitado = requisitosCompletos(requisitos);
-          if (!habilitado) return;
+        const title = document.createElement('h3');
+        title.textContent = `Semestre ${j + 1}`;
+        title.style.cursor = 'pointer';
 
-          if (algunoSinMarcar) {
-            btn.classList.add('completado');
-            localStorage.setItem(btn.dataset.codigo, '1');
-          } else {
-            btn.classList.remove('completado');
-            localStorage.setItem(btn.dataset.codigo, '0');
-          }
-        });
+        title.addEventListener('click', () => {
+          const botones = col.querySelectorAll('.curso');
+          const algunoSinMarcar = Array.from(botones).some(btn => !btn.classList.contains('completado'));
 
-        actualizarEstado();
-      });
+          botones.forEach(btn => {
+            const requisitos = JSON.parse(btn.dataset.requisitos || '[]');
+            const habilitado = requisitosCompletos(requisitos);
+            if (!habilitado) return;
 
-      col.appendChild(title);
+            if (algunoSinMarcar) {
+              btn.classList.add('completado');
+              localStorage.setItem(btn.dataset.codigo, '1');
+            } else {
+              btn.classList.remove('completado');
+              localStorage.setItem(btn.dataset.codigo, '0');
+            }
+          });
 
-      semestre.forEach(curso => {
-        const requisitos = curso.requisitos || [];
-        const requisitosNumeros = requisitos.map(reqCodigo => {
-          const cursoReq = malla.flat().find(c => c.codigo === reqCodigo);
-          return cursoReq ? cursoReq.numero : '?';
-        });
-
-        const btn = document.createElement('button');
-        btn.className = 'curso';
-        btn.dataset.codigo = curso.codigo;
-        btn.dataset.requisitos = JSON.stringify(requisitos);
-       btn.innerHTML = `
-  <span class="numero-curso">#${curso.numero}</span>
-  <div class="curso-content">
-    <strong>${curso.codigo}</strong>: ${curso.nombre}<br>
-    <span class="creditos">${curso.creditos} créditos</span>
-  </div>
-  <span class="requisitos-num">${requisitosNumeros.join(', ')}</span>
-`;
-
-
-        if (estaAprobado(curso.codigo)) {
-          btn.classList.add('completado');
-        }
-
-        btn.addEventListener('click', () => {
-          if (btn.disabled) return;
-          btn.classList.toggle('completado');
-          const estado = btn.classList.contains('completado') ? '1' : '0';
-          localStorage.setItem(curso.codigo, estado);
           actualizarEstado();
         });
 
-        col.appendChild(btn);
-      });
+        col.appendChild(title);
 
-      container.appendChild(col);
-    });
+        semestre.forEach(curso => {
+          const requisitos = curso.requisitos || [];
+          const requisitosNumeros = requisitos.map(reqCodigo => {
+            const cursoReq = malla.flat().find(c => c.codigo === reqCodigo);
+            return cursoReq ? cursoReq.numero : '?';
+          });
+
+          const btn = document.createElement('button');
+          btn.className = 'curso';
+          btn.dataset.codigo = curso.codigo;
+          btn.dataset.requisitos = JSON.stringify(requisitos);
+          btn.innerHTML = `
+            <span class="numero-curso">#${curso.numero}</span>
+            <div class="curso-content">
+              <strong>${curso.codigo}</strong>: ${curso.nombre}<br>
+              <span class="creditos">${curso.creditos} créditos</span>
+            </div>
+            <span class="requisitos-num">${requisitosNumeros.join(', ')}</span>
+          `;
+
+          if (estaAprobado(curso.codigo)) {
+            btn.classList.add('completado');
+          }
+
+          btn.addEventListener('click', () => {
+            if (btn.disabled) return;
+            btn.classList.toggle('completado');
+            const estado = btn.classList.contains('completado') ? '1' : '0';
+            localStorage.setItem(curso.codigo, estado);
+            actualizarEstado();
+          });
+
+          col.appendChild(btn);
+        });
+
+        nivelDiv.appendChild(col);
+      }
+
+      container.appendChild(nivelDiv);
+    }
 
     actualizarEstado();
   </script>
