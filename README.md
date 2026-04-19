@@ -1,4 +1,4 @@
-Plan Interactivo – Ingeniería en Sistemas
+Plan Interactivo
 
 Aplicación web interactiva que permite visualizar y gestionar el avance académico dentro del plan de estudios de Ingeniería en Sistemas de la Universidad Nacional de Costa Rica. El usuario puede marcar cursos aprobados y visualizar automáticamente los requisitos necesarios para habilitar nuevas materias junto a los créditos correspondientes.
 
