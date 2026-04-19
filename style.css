@@ -110,10 +110,16 @@ h1 {
   color: #ccc;
 }
 
-/*@media (max-width: 768px) {
+@media (max-width: 768px) {
+
   #malla-container {
-    grid-template-columns: 1fr; /* Solo una columna en pantallas pequeñas 
+    grid-template-columns: 1fr;
   }
-}*/
+
+  .nivel {
+    grid-template-columns: 1fr;
+  }
+
+}
 
 
